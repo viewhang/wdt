@@ -1,0 +1,16 @@
+<idea-plugin>
+    <id>com.ethan.wdt</id>
+    <name>wdt</name>
+    <vendor>Ethan</vendor>
+    <description><![CDATA[
+        Who Did This shows the latest Git commit author, time, and summary for the line under the primary caret.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.vcs</depends>
+    <depends>Git4Idea</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <editorFactoryListener implementation="com.ethan.wdt.WdtEditorListener"/>
+    </extensions>
+</idea-plugin>
