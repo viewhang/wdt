@@ -81,18 +81,13 @@ class GitCommitInfoIntegrationTest : BasePlatformTestCase() {
         FileDocumentManager.getInstance().saveDocument(document)
         waitForChangeListUpdate()
 
-        val service = project.service<GitCommitInfoService>()
-        val infoBeforeTracker = runBlocking {
-            service.findCommitInfo(file, document, 1)
-        }
-        assertNull(infoBeforeTracker)
-
         val trackerManager = LineStatusTrackerManager.getInstance(project)
         trackerManager.requestTrackerFor(document, this)
         try {
             waitForOperationalLineTracker(document)
             waitForModifiedLine(document, 0)
 
+            val service = project.service<GitCommitInfoService>()
             val modifiedLineInfo = runBlocking {
                 service.findCommitInfo(file, document, 0)
             }

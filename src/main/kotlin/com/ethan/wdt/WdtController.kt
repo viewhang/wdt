@@ -73,8 +73,8 @@ internal class WdtController(
         editor.document.addDocumentListener(this, this)
         editor.project?.let(LineStatusTrackerManager::getInstanceImpl)?.let { trackerManager ->
             trackerManager.addTrackerListener(object : LineStatusTrackerManager.Listener {
-                /** 当前文档的行状态可用后重新查询，避免缓存未映射的修改行 */
-                override fun onTrackerBecomeValid(tracker: LineStatusTracker<*>) {
+                /** 当前文档的行状态跟踪器创建后重新查询，避免缓存未映射的修改行 */
+                override fun onTrackerAdded(tracker: LineStatusTracker<*>) {
                     if (tracker.document == editor.document) scheduleSourceChanged()
                 }
             }, this)
@@ -103,8 +103,9 @@ internal class WdtController(
 
     /** 主光标换行时立即清除旧提示并查询新行 */
     override fun caretPositionChanged(event: CaretEvent) {
-        if (event.caret == editor.caretModel.primaryCaret) {
-            refresh(event.caret.logicalPosition.line)
+        val caret = event.caret ?: return
+        if (caret == editor.caretModel.primaryCaret) {
+            refresh(caret.logicalPosition.line)
         }
     }
 

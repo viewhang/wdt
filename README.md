@@ -23,8 +23,8 @@ Ethan · 2026-09-02 14:30 · feat: 添加订单校验
 
 ## 环境要求
 
-- IntelliJ IDEA 2026.2 或更高版本
-- JDK 25
+- IntelliJ IDEA 2024.3 或更高版本
+- 构建环境使用 JDK 21
 
 ## 构建
 
@@ -32,7 +32,7 @@ Ethan · 2026-09-02 14:30 · feat: 添加订单校验
 ./gradlew buildPlugin
 ```
 
-插件包生成在 `build/distributions/wdt-0.1.0.zip`
+插件包生成在 `build/distributions/wdt-<版本号>.zip`
 
 如需使用本机已安装的 IntelliJ IDEA 构建：
 
@@ -51,7 +51,7 @@ Ethan · 2026-09-02 14:30 · feat: 添加订单校验
 1. 构建插件包
 2. 打开 IntelliJ IDEA 的 `Settings | Plugins`
 3. 点击齿轮图标并选择 `Install Plugin from Disk...`
-4. 选择 `build/distributions/wdt-0.1.0.zip`
+4. 选择 `build/distributions/wdt-<版本号>.zip`
 5. 打开 Git 已跟踪文件，将主光标移动到需要查看的代码行
 
 ## 当前限制

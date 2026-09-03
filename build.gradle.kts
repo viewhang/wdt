@@ -23,10 +23,10 @@ dependencies {
         if (localIdePath.isPresent) {
             local(localIdePath)
         } else {
-            intellijIdea("2026.2.1")
+            intellijIdea("2024.3")
         }
         bundledModule("com.intellij.modules.vcs")
-        bundledModule("intellij.platform.vcs.dvcs")
+        bundledModule("intellij.platform.vcs.dvcs.impl")
         bundledPlugin("Git4Idea")
         testFramework(TestFrameworkType.Platform)
     }
@@ -34,16 +34,16 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(25)
+    jvmToolchain(21)
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_25)
+        jvmTarget.set(JvmTarget.JVM_21)
     }
 }
 
 intellijPlatform {
     pluginConfiguration {
         ideaVersion {
-            sinceBuild = "262"
+            sinceBuild = "243"
         }
     }
 
