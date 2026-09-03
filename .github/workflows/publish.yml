@@ -1,0 +1,44 @@
+name: 发布插件
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: 发布到 JetBrains Marketplace
+    runs-on: ubuntu-latest
+    env:
+      CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
+      PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v6
+
+      - name: 配置 JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: "25"
+
+      - name: 配置 Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: 解析版本号
+        shell: bash
+        run: |
+          if [[ ! "$GITHUB_REF_NAME" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Tag 必须符合 SemVer，例如 v0.1.1 或 v0.2.0-beta.1"
+            exit 1
+          fi
+          echo "PLUGIN_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+
+      - name: 验证并发布
+        run: ./gradlew test verifyPluginStructure verifyPluginProjectConfiguration publishPlugin -PpluginVersion="$PLUGIN_VERSION"
