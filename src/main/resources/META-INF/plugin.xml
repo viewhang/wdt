@@ -1,10 +1,13 @@
 <idea-plugin>
     <id>com.ethan.wdt</id>
-    <name>wdt</name>
-    <vendor>Ethan</vendor>
+    <name>Who Did This</name>
+    <vendor email="penghang4210@gmail.com" url="https://github.com/viewhang/wdt">Ethan</vendor>
     <description><![CDATA[
         Who Did This shows the latest Git commit author, time, and summary for the line under the primary caret.
     ]]></description>
+    <change-notes><![CDATA[
+        Initial release with inline Git commit author, time, and summary for the current line.
+    ]]></change-notes>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.vcs</depends>

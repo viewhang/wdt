@@ -1,4 +1,4 @@
-# wdt
+# Who Did This
 
 **Who Did This** 是一个 IntelliJ IDEA 插件，用于在主光标所在代码行末尾显示该行最后一次 Git 提交的作者、时间和摘要
 
