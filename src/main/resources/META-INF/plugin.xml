@@ -6,7 +6,7 @@
         Who Did This shows the latest Git commit author, time, and summary for the line under the primary caret.
     ]]></description>
     <change-notes><![CDATA[
-        Added support for IntelliJ IDEA 2024.3 and later.
+        Added a signed plugin archive to GitHub Releases.
     ]]></change-notes>
 
     <depends>com.intellij.modules.platform</depends>
