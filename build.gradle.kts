@@ -1,5 +1,6 @@
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     kotlin("jvm") version "2.4.0"
@@ -37,6 +38,8 @@ kotlin {
     jvmToolchain(21)
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_21)
+        // IDEA 2024.3 内置 Kotlin 2.0.21，限制 API 版本以避免生成新版标准库引用
+        apiVersion.set(KotlinVersion.KOTLIN_2_0)
     }
 }
 
