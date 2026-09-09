@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin require-restart="true">
     <id>com.ethan.wdt</id>
     <name>Who Did This</name>
     <vendor email="penghang4210@gmail.com" url="https://github.com/viewhang/wdt">Ethan</vendor>
@@ -6,7 +6,7 @@
         Who Did This shows the latest Git commit author, time, and summary for the line under the primary caret.
     ]]></description>
     <change-notes><![CDATA[
-        Fixed Kotlin runtime compatibility with IntelliJ IDEA 2024.3.
+        Installing, updating, or uninstalling the plugin now requires an IDE restart.
     ]]></change-notes>
 
     <depends>com.intellij.modules.platform</depends>
