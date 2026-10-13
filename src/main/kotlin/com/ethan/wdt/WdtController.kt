@@ -6,10 +6,9 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.Inlay
+import com.intellij.openapi.editor.event.BulkAwareDocumentListener
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
-import com.intellij.openapi.editor.event.DocumentEvent
-import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import com.intellij.openapi.vcs.VcsException
@@ -61,7 +60,7 @@ internal class WdtController(
     private val loadCommitInfo: suspend (VirtualFile, Document, Int) -> GitCommitInfo?,
     private val invalidateFile: (VirtualFile) -> Unit,
     private val debounceMillis: Long = DEFAULT_DEBOUNCE_MILLIS,
-) : CaretListener, DocumentListener, Disposable {
+) : CaretListener, BulkAwareDocumentListener.Simple, Disposable {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.EDT)
     private val requests = WdtRequestState()
     private var queryJob: Job? = null
@@ -109,8 +108,8 @@ internal class WdtController(
         }
     }
 
-    /** 文档变化后清除缓存并重新查询当前行 */
-    override fun documentChanged(event: DocumentEvent) {
+    /** 将批量修改合并到结束后刷新，避免在 bulk 模式读取光标位置 */
+    override fun afterDocumentChange(document: Document) {
         sourceChanged()
     }
 

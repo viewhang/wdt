@@ -5,6 +5,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.util.DocumentUtil
 import java.time.Instant
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -154,6 +155,54 @@ class WdtControllerTest : BasePlatformTestCase() {
             waitForLatch(completed)
             assertEquals(2, loads.get())
             assertEquals(1, invalidations.get())
+        } finally {
+            Disposer.dispose(controller)
+        }
+    }
+
+    /** 批量修改期间不能读取光标位置，结束后需合并刷新并替换旧提示 */
+    fun testBulkDocumentChangeReloadsAfterBulkUpdate() {
+        myFixture.configureByText("Sample.kt", "val<caret>ue")
+        val document = myFixture.editor.document
+        val queriedLines = mutableListOf<Int>()
+        val invalidations = AtomicInteger()
+        val completed = CountDownLatch(2)
+        val controller = WdtController(
+            editor = myFixture.editor,
+            loadCommitInfo = { _, _, line ->
+                assertFalse(document.isInBulkUpdate)
+                queriedLines.add(line)
+                completed.countDown()
+                GitCommitInfo("Ethan", Instant.EPOCH, "init")
+            },
+            invalidateFile = { invalidations.incrementAndGet() },
+            debounceMillis = 0,
+        )
+
+        try {
+            PlatformTestUtil.waitWithEventsDispatching(
+                "initial query did not finish",
+                { completed.count == 1L },
+                5,
+            )
+            val originalInlay = myFixture.editor.inlayModel
+                .getAfterLineEndElementsForLogicalLine(0)
+                .single()
+            WriteCommandAction.runWriteCommandAction(project) {
+                DocumentUtil.executeInBulk(document, true) {
+                    document.insertString(0, "first\n")
+                    document.insertString(0, "second\n")
+                    assertEquals(0, invalidations.get())
+                    assertEquals(listOf(0), queriedLines)
+                }
+            }
+            waitForLatch(completed)
+            PlatformTestUtil.dispatchAllInvocationEventsInIdeEventQueue()
+
+            assertEquals(1, invalidations.get())
+            assertEquals(listOf(0, 2), queriedLines)
+            assertFalse(originalInlay.isValid)
+            assertEquals(1, myFixture.editor.inlayModel.getAfterLineEndElementsForLogicalLine(2).size)
         } finally {
             Disposer.dispose(controller)
         }
